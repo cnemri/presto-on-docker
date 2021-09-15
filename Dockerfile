@@ -1,6 +1,6 @@
 FROM centos:7
 
-LABEL Maintainer="Asif Kazi<asif.kazi@gmail.com>"
+LABEL Maintainer="Chouaieb Nemri<chouaib.nemri@gmail.com>"
 LABEL Description="Presto Server"
 LABEL Version="0.0.5"
 

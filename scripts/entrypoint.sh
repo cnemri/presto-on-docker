@@ -42,25 +42,6 @@ set -e
 : "${PRESTO_CATALOG_HIVE:=true}"
 : "${PRESTO_CATALOG_HIVE_NAME:=hive}"
 
-
-# hive-s3
-: "${PRESTO_CATALOG_HIVE_USE_S3:=true}"
-: "${PRESTO_CATALOG_HIVE_S3_AWS_ACCESS_KEY:=}"
-: "${PRESTO_CATALOG_HIVE_S3_AWS_SECRET_KEY:=}"
-: "${PRESTO_CATALOG_HIVE_S3_ENDPOINT:=}"
-: "${PRESTO_CATALOG_HIVE_S3_IAM_ROLE:=}"
-: "${PRESTO_CATALOG_HIVE_S3_USE_INSTANCE_CREDENTIALS:=false}"
-: "${PRESTO_CATALOG_HIVE_S3_SELECT_PUSHDOWN_ENABLED:=true}"
-
-
-# hive glue
-: "${PRESTO_CATALOG_HIVE_METASTORE_URI:=glue}" #Options are file,glue or a specific thrift endpoint
-: "${PRESTO_CATALOG_HIVE_METASTORE_GLUE_REGION:=us-east-1}" 
-: "${PRESTO_CATALOG_HIVE_METASTORE_GLUE_IAM_ROLE:=}"  
-: "${PRESTO_CATALOG_HIVE_GLUE_AWS_ACCESS_KEY:=}"
-: "${PRESTO_CATALOG_HIVE_GLUE_AWS_SECRET_KEY:=}"
-
-
 # mysql
 : "${PRESTO_CATALOG_MYSQL:=true}"
 : "${PRESTO_CATALOG_MYSQL_NAME:=mysql}"
@@ -176,33 +157,8 @@ catalog_hive_config()
     echo "hive.allow-rename-column=true"
     echo "hive.non-managed-table-writes-enabled=true"
     echo "hive.non-managed-table-creates-enabled=true"
-    
-    # use a real metastore, or a file-based metastore
-    if [ $PRESTO_CATALOG_HIVE_METASTORE_URI == "file" ]; then
-        echo "hive.metastore=file"
-        echo "hive.metastore.catalog.dir=file:///tmp/hive_catalog"
-        echo "hive.metastore.user=presto"
-    elif [ $PRESTO_CATALOG_HIVE_METASTORE_URI == "glue" ]; then
-        echo "hive.metastore=glue"
-        echo "hive.metastore.glue.aws-access-key=${PRESTO_CATALOG_HIVE_GLUE_AWS_ACCESS_KEY}"
-        echo "hive.metastore.glue.aws-secret-key=${PRESTO_CATALOG_HIVE_GLUE_AWS_SECRET_KEY}"
-        echo "hive.metastore.glue.region=${PRESTO_CATALOG_HIVE_METASTORE_GLUE_REGION}"
-        echo "hive.metastore.glue.iam-role=${PRESTO_CATALOG_HIVE_METASTORE_GLUE_IAM_ROLE}"
-  
-    else
-        echo "hive.metastore.uri=${PRESTO_CATALOG_HIVE_METASTORE_URI}"
-    fi
-
-    # s3 on hive    
-    if [ $PRESTO_CATALOG_HIVE_USE_S3 == "true" ]; then
-        echo "hive.s3.aws-access-key=${PRESTO_CATALOG_HIVE_S3_AWS_ACCESS_KEY}"
-        echo "hive.s3.aws-secret-key=${PRESTO_CATALOG_HIVE_S3_AWS_SECRET_KEY}"
-        echo "hive.s3.iam-role=${PRESTO_CATALOG_HIVE_S3_IAM_ROLE}"
-        #Enable for custom endpoint only like minio
-        #echo "hive.s3.endpoint=${PRESTO_CATALOG_HIVE_S3_ENDPOINT}"
-        echo "hive.s3.use-instance-credentials=${PRESTO_CATALOG_HIVE_S3_USE_INSTANCE_CREDENTIALS}"
-        echo "hive.s3select-pushdown.enabled=${PRESTO_CATALOG_HIVE_S3_SELECT_PUSHDOWN_ENABLED}"
-    fi
+    echo "hive.metastore.uri=${PRESTO_CATALOG_HIVE_METASTORE_URI}"
+    echo "hive.config.resources=/etc/hadoop/conf/core-site.xml,/etc/hadoop/conf/hdfs-site.xml"
 } > "/etc/presto/catalog/${PRESTO_CATALOG_HIVE_NAME}.properties"
 
 #############################
