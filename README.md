@@ -6,19 +6,19 @@ This repository contains a **Dockerfile** of [Presto]
 
 Pull the image from the Docker repository.
 ```
-docker pull asifkazi/docker-presto:latest
+docker pull cnemri/presto-server:latest
 ```
 
 ## Build
 ```
-docker build --rm -t asifkazi/docker-presto:latest .
+docker build --rm -t cnemri/presto-server:latest .
 ```
 
 ## Usage
 
 ### To start a single node Presto cluster
 ```
-docker run -p 8080:8080 asifkazi/docker-presto:latest
+docker run -p 8080:8080 cnemri/presto-server:latest
 ```
 
 

@@ -158,7 +158,7 @@ catalog_hive_config()
     echo "hive.non-managed-table-writes-enabled=true"
     echo "hive.non-managed-table-creates-enabled=true"
     echo "hive.metastore.uri=${PRESTO_CATALOG_HIVE_METASTORE_URI}"
-    echo "hive.config.resources=/etc/hadoop/conf/core-site.xml,/etc/hadoop/conf/hdfs-site.xml"
+    echo "hive.config.resources=${PRESTO_CATALOG_HIVE_CONFIG_RESOURCES}"
 } > "/etc/presto/catalog/${PRESTO_CATALOG_HIVE_NAME}.properties"
 
 #############################
@@ -231,6 +231,10 @@ fi
 if [ $PRESTO_CATALOG_MYSQL == "true" ]; then
     catalog_mysql_config
 fi
+
+# Copy alluxio jar to presto plugins directory
+cp ${ALLUXIO_HOME}/client/alluxio-${env_ALLUXIO_VERSION}-client.jar /usr/lib/presto/lib/plugin/hive-hadoop2
+
 
 #############################
 # execute
