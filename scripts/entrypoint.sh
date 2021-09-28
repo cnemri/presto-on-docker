@@ -42,6 +42,10 @@ set -e
 : "${PRESTO_CATALOG_HIVE:=true}"
 : "${PRESTO_CATALOG_HIVE_NAME:=hive}"
 
+# alluxio
+: "${PRESTO_CATALOG_ALLUXIO:=true}"
+: "${PRESTO_CATALOG_ALLUXIO_NAME:=catalog_alluxio}"
+
 # mysql
 : "${PRESTO_CATALOG_MYSQL:=true}"
 : "${PRESTO_CATALOG_MYSQL_NAME:=mysql}"
@@ -162,6 +166,17 @@ catalog_hive_config()
 } > "/etc/presto/catalog/${PRESTO_CATALOG_HIVE_NAME}.properties"
 
 #############################
+# catalog alluxio
+#############################
+catalog_alluxio_config()
+{
+  echo "connector.name=hive-hadoop2"
+  echo "hive.metastore=alluxio"
+  echo "hive.metastore.alluxio.master.address=alluxio-master-0:19998"
+} > "/etc/presto/catalog/${PRESTO_CATALOG_ALLUXIO_NAME}.properties"
+
+
+#############################
 # catalog mysql
 #############################
 catalog_mysql_config() 
@@ -225,6 +240,11 @@ if [ $PRESTO_CATALOG_HIVE == "true" ]; then
     # 06/26 Yaay! looks like someone fixed it
     # mkdir -p /root/.aws/
     # aws_sdk_credentials_config
+fi
+
+# alluxio
+if [ $PRESTO_CATALOG_ALLUXIO == "true" ]; then
+    catalog_alluxio_config
 fi
 
 # hive
